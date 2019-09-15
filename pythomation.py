@@ -245,7 +245,7 @@ def get_app_list(handles=[]):
     return mlst
 
 
-def find_windows(win_name_part):
+def find_windows(win_name_part, return_single = True):
     ''' Finds and prints a list of windows with names that contain the (win_name_part)
     '''
     appwindows = get_app_list()
@@ -254,8 +254,12 @@ def find_windows(win_name_part):
     for i in appwindows:
         if win_name_part.lower() in i[1].lower():
             print (i)
-            list_win_name.append(i)
-    return list_win_name
+            if return_single:
+                return i
+            else:
+                list_win_name.append(i)
+    if return_single == False:
+        return list_win_name
 
 
 def get_win_info():
