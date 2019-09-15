@@ -46,11 +46,11 @@ def until_done(action,
         i+=1
         action
         #print(str(action))
+        time.sleep(interval)
         result_checker
         #print(str(result_checker))
         if result_checker == checker_condition:
             return True
-        time.sleep(interval)
         if Infinite_Loop:
             retry_number += 1
 
