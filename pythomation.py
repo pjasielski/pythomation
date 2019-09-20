@@ -1,7 +1,7 @@
 # pythomation (Work In Progress)
 
 # RPA - Robotic Process Automation with Python
-Version = '[15.09.2019]'
+Version = '[20.09.2019]'
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -27,8 +27,8 @@ import os
 def until_done(action,
                result_checker,
                checker_condition,
-               interval = 0,
-               retry_number = -1):
+               interval=0,
+               retry_number=-1):
     '''
     [action] - function to perform 
     [result_checker] - function to check if action was successfull
@@ -85,7 +85,7 @@ def winwait(win_name , timeout = -1):
     i = 0
     is_visible=False
     while i < timeout:
-        while is_visible==False:
+        while not is_visible:
             i += 1
             #print(str(i) + " T: " + str(timeout))
             if Infinite_Loop:
@@ -94,7 +94,7 @@ def winwait(win_name , timeout = -1):
             is_visible = win32gui.IsWindowVisible(handle)
             if is_visible:
                 return is_visible
-        if Infinite_Loop == False:
+        if not Infinite_Loop:
             time.sleep(1)
 
 
@@ -137,7 +137,7 @@ def winmove_main_citrix(win_name): # subject to further improvement
 
 #====================[ UTILITY: IMAGES ]========================#
 
-def picclick(picture_path, confidence_level = 0.99 ,is_grayscale = False , offset_x = None ,offset_y = None): # + region? picfind_area
+def picclick(picture_path, confidence_level=0.99 ,is_grayscale=False , offset_x=None ,offset_y=None): # + region? picfind_area
     '''[>] Clicks on specified image (picture_path) on the screen.
     [>] confidence_level specifies the percentage of pixels that have to match the source image.
     [>] If is_grayscale = True: image is searched in grayscale (colors are ignored)
@@ -152,7 +152,7 @@ def picclick(picture_path, confidence_level = 0.99 ,is_grayscale = False , offse
         pyautogui.click(image[0] + offset_x , image[1]+ offset_y)
 
 
-def picwait(picture_path, confidence_level = 0.99 , is_grayscale = False , timeout = -1):
+def picwait(picture_path, confidence_level=0.99 , is_grayscale=False , timeout=-1):
     '''[>] Waits for specified image (picture_path) - searches for the window every second.
     [>] timeout is the limit of seconds for performing this action.
     If timeout is not specified by the user or is -1: 
@@ -168,10 +168,10 @@ def picwait(picture_path, confidence_level = 0.99 , is_grayscale = False , timeo
         i += 1
         if Infinite_Loop:
             timeout +=1
-        image = pyautogui.locateOnScreen(picture_path, confidence = confidence_level, grayscale = is_grayscale)
+        image = pyautogui.locateOnScreen(picture_path, confidence=confidence_level, grayscale=is_grayscale)
         if image is not None:
             return image
-        if Infinite_Loop == False:
+        if not Infinite_Loop:
             time.sleep(1)
 
 
@@ -197,7 +197,7 @@ def webopen_chrome(chrome_driver, website_address): # subject to further improve
 
 #====================[ UTILITY: LOG ]========================#
 
-def botcomment(comment_text, date_format = '%Y-%m-%d %H:%M:%S',  script_name = os.path.basename(__file__)):
+def botcomment(comment_text, date_format='%Y-%m-%d %H:%M:%S',  script_name=os.path.basename(__file__)):
     '''[>] Prints a comment in specified format
     '''
     t = datetime.datetime.now()
