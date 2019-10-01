@@ -1,7 +1,7 @@
 # pythomation (Work In Progress)
 
 # RPA - Robotic Process Automation with Python
-Version = '[20.09.2019]'
+__version__ = '2019.10.01'
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -21,6 +21,8 @@ import keyboard
 import pyautogui
 import os
 
+import re
+
 
 #====================[ UTILITY: ACTION MANAGEMENT ]========================#
 
@@ -37,10 +39,10 @@ def until_done(action,
     [retry_number = -1] - how many times action will be repeated
     >if not specified - it will be performed until successful.
     '''
-    Infinite_Loop = False
+    infinite_loop = False
     if retry_number == -1:
         retry_number = 2
-        Infinite_Loop = True
+        infinite_loop = True
     i = 0
     while i < retry_number:
         i+=1
@@ -51,11 +53,12 @@ def until_done(action,
         #print(str(result_checker))
         if result_checker == checker_condition:
             return True
-        if Infinite_Loop:
+        if infinite_loop:
             retry_number += 1
 
 
 #====================[ UTILITY: WINDOWS ]========================#
+# TODO: Selenium/Winium desktop app handling
 
 def wintop(win_name):
     '''Moves specified window to the foreground.
@@ -78,23 +81,21 @@ def winwait(win_name , timeout = -1):
     [>] timeout is the limit of seconds for performing this action.
     [>] If timeout is not specified by the user or is -1: Action is performed infinitely.
     '''
-    Infinite_Loop = False
+    infinite_loop = False
     if timeout == -1:
         timeout = 2
-        Infinite_Loop = True
+        infinite_loop = True
     i = 0
     is_visible=False
-    while i < timeout:
-        while not is_visible:
-            i += 1
-            #print(str(i) + " T: " + str(timeout))
-            if Infinite_Loop:
-                timeout +=1
-            handle = win32gui.FindWindow(0, win_name)
-            is_visible = win32gui.IsWindowVisible(handle)
-            if is_visible:
-                return is_visible
-        if not Infinite_Loop:
+    while not is_visible:
+        i += 1
+        if infinite_loop:
+            Timeout +=1
+        handle = win32gui.FindWindow(0, WinName)
+        is_visible = win32gui.IsWindowVisible(handle)
+        if is_visible or i >= timeout:
+            return is_visible
+        if not infinite_loop:
             time.sleep(1)
 
 
@@ -159,10 +160,10 @@ def picwait(picture_path, confidence_level=0.99 , is_grayscale=False , timeout=-
     [>] Action is performed infinitely.
     '''
     image = None
-    Infinite_Loop = False
+    infinite_loop = False
     if timeout == -1:
         timeout = 2
-        Infinite_Loop = True
+        infinite_loop = True
     i = 0
     while i < timeout:
         i += 1
@@ -171,9 +172,10 @@ def picwait(picture_path, confidence_level=0.99 , is_grayscale=False , timeout=-
         image = pyautogui.locateOnScreen(picture_path, confidence=confidence_level, grayscale=is_grayscale)
         if image is not None:
             return image
-        if not Infinite_Loop:
+        if not infinite_loop:
             time.sleep(1)
 
+#TODO: relational secondaary image search (finishing touches)
 
 #====================[ UTILITY: WEB ]========================#
 
@@ -193,7 +195,7 @@ def webopen_chrome(chrome_driver, website_address): # subject to further improve
     browser.get(website_address)
 
     
-# Add web module here
+# TODO: Add web module here
 
 #====================[ UTILITY: LOG ]========================#
 
@@ -228,6 +230,20 @@ def botlog(comment,
                             format = '%(message)s',
                             datefmt = '%H:%M:%S')
     logging.info(str(botcomment(comment, script_name = script_name)))
+    
+    
+ def screenshot(folder_path, file_name, format='.png', replacement = ''):
+    '''
+    folder_path - path to folder in which the screenshot is supposed to be saved
+    file_name - screenshot file name
+    format - file format expension ('.png' is default)
+    replacement - every special character in file name will be replaced with this
+    '''
+    clean_str = re.sub('[^a-zA-Z0-9 \n\.]', replacement, file_name)
+    if not os.path.exist(folder_path):
+        os.mkdir(folder_path)
+    screen_name = f'{folder_path}\\{clean_str}{format}'
+    pyautogui.screenshot(screen_name)
 
 
 #====================[ UTILITY: FINDERS ]========================#
@@ -258,7 +274,7 @@ def find_windows(win_name_part, return_single = True):
                 return i
             else:
                 list_win_name.append(i)
-    if return_single == False:
+    if not return_single:
         return list_win_name
 
 
