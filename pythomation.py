@@ -232,18 +232,20 @@ def botlog(comment,
     logging.info(str(botcomment(comment, script_name = script_name)))
     
     
- def screenshot(folder_path, file_name, format='.png', replacement = ''):
+def screenshot(folder_path, file_name, file_format='.png', clean=False, replacement = ''):
     '''
     folder_path - path to folder in which the screenshot is supposed to be saved
     file_name - screenshot file name
-    format - file format expension ('.png' is default)
+    file_format - file format extension ('.png' is default)
+    clean - if set to True, replaces special characters
     replacement - every special character in file name will be replaced with this
-    '''
-    clean_str = re.sub('[^a-zA-Z0-9 \n\.]', replacement, file_name)
-    if not os.path.exist(folder_path):
-        os.mkdir(folder_path)
-    screen_name = f'{folder_path}\\{clean_str}{format}'
-    pyautogui.screenshot(screen_name)
+    '''   
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    screen_name = os.path.join(folder_path, file_name)
+    if clean:
+        screen_name = re.sub('[^a-zA-Z0-9 \n\.]', replacement, screen_name)
+    pyautogui.screenshot(screen_name + file_format)
 
 
 #====================[ UTILITY: FINDERS ]========================#
