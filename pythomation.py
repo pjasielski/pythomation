@@ -90,7 +90,7 @@ def winwait(win_name , timeout = -1):
     while not is_visible:
         i += 1
         if infinite_loop:
-            Timeout +=1
+            timeout +=1
         handle = win32gui.FindWindow(0, WinName)
         is_visible = win32gui.IsWindowVisible(handle)
         if is_visible or i >= timeout:
